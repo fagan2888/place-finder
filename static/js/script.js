@@ -25,6 +25,21 @@ function loadData() {
     // load streetview
     $body.append('<img class="bgimg" src="' + streetViewURL + '">');
 
+    // Wikipedia AJAX request
+    var wikiURL = "http://en.wikipedia.org/w/api.php?format=json&action=opensearch&search=" + cityStr + "&continue=&callback=wikiCallback";
+    $.ajax({
+        url: wikiURL,
+        dataType: "jsonp",
+        success: function(response) {
+            var articleList = response[1];
+            for (var i=0; i < articleList.length; i++) {
+                var articleStr = articleList[i];
+                var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+                $wikiElem.append('<li><a href="' + url + '">' + articleStr + '</a></li>');
+            };
+        }
+    });
+
     // NYTimes AJAX request
     $.getScript("/static/js/secret_key.js", function(){
         console.log(secret_key);
