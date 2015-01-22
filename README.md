@@ -11,5 +11,5 @@ Features:
 - NYTimes API uses JSON and has error handling
 
 To run:
-in development: dev_appserver.py minicourse-ajax-project
-in production: appcfg.py --oauth2 -A rachel-place-finder update minicourse-ajax-project/
+- in development: dev_appserver.py minicourse-ajax-project
+- in production: appcfg.py --oauth2 -A rachel-place-finder update minicourse-ajax-project/
