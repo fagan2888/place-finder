@@ -14,6 +14,7 @@ function loadData() {
     $wikiElem.text("");
     $nytElem.text("");
 
+
     var streetStr = $('#street').val();
     var cityStr = $('#city').val();
     var address = streetStr + ', ' + cityStr;
@@ -32,10 +33,15 @@ function loadData() {
         $.getJSON(nytURL, function(data){
             articles = data.response.docs;
             for (var i=0; i < articles.length; i++) {
-                $("#nytimes-articles").append("<li>" + articles[i].headline.main + "</li>");
-            }
-            console.log(data.response.docs);
-            //$("nytimes-articles").each(
+                var article = articles[i];
+                var href = '<a href="' + article.web_url + '">' + article.headline.main + '</a>';
+                var par = '<p>' + article.lead_paragraph + '</p>'; 
+                var liString = '<li class="article">' + href + par + '</li>';
+                $nytElem.append(liString);
+            };
+        }).error(function(e){
+            console.log(e);
+            $nytHeaderElem.text("New York Times Articles Could not be Loaded");
         });
     });
 
