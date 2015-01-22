@@ -17,9 +17,20 @@ function loadData() {
 
     var streetStr = $('#street').val();
     var cityStr = $('#city').val();
-    var address = streetStr + ', ' + cityStr;
+    var address;
+    var greetingText;
+    if(streetStr == ""){
+        address = cityStr;
+        greetingText = "So you want to live in " + cityStr + "?";
+    }else{
+        address = streetStr + ', ' + cityStr;
+        greetingText = "So you want to live at " + address + "?";
+    };
+    if(cityStr == ""){
+        greetingText = "Please enter a city";
+    }
 
-    $greeting.text('So, you want to live at ' + address + '?');
+    $greeting.text(greetingText);
 
     var streetViewURL = 'http://maps.googleapis.com/maps/api/streetview?size=600x400&location=' + address;
     // load streetview
@@ -27,6 +38,10 @@ function loadData() {
 
     // Wikipedia AJAX request
     var wikiURL = "http://en.wikipedia.org/w/api.php?format=json&action=opensearch&search=" + cityStr + "&continue=&callback=wikiCallback";
+    var wikiRequestTimeout = setTimeout(function(){
+        $wikiElem.text("failed to get wikipedia resources");
+    }, 8000);
+
     $.ajax({
         url: wikiURL,
         dataType: "jsonp",
@@ -37,6 +52,8 @@ function loadData() {
                 var url = 'http://en.wikipedia.org/wiki/' + articleStr;
                 $wikiElem.append('<li><a href="' + url + '">' + articleStr + '</a></li>');
             };
+
+            clearTimeout(wikiRequestTimeout);
         }
     });
 
@@ -44,7 +61,8 @@ function loadData() {
     $.getScript("/static/js/secret_key.js", function(){
         console.log(secret_key);
         var nytKey = secret_key;
-        var nytURL = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + address + "&api-key=" + nytKey;
+        var nytURL = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + cityStr + "&api-key=" + nytKey;
+        console.log(nytURL);
         $.getJSON(nytURL, function(data){
             articles = data.response.docs;
             for (var i=0; i < articles.length; i++) {
